@@ -1,5 +1,7 @@
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -11,11 +13,15 @@ import java.io.ObjectInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javafx.scene.text.Text;
+import javafx.collections.FXCollections;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Driver extends Application {
-    static FoodsMap foodsMap; // holds a hashmap of days and their corresponding foods
+    private static FoodsMap foodsMap = new FoodsMap(); // holds a hashmap of days and their corresponding foods
+    private static ListView<Food> foodsOfDay = new ListView<>(); // will store and display the foods for the day
+    private static LocalDate displayDate;       // will be the day in question
 
     public static void main(String[] args) {
         launch(args);
@@ -72,20 +78,34 @@ public class Driver extends Application {
         HBox DaySelectAndList = new HBox(50);
         Button goBackOneDay = new Button("<");
         Button goForwardOneDay = new Button(">");
-        Text displayDate = new Text();
-        LocalDate today = LocalDate.now();
-        displayDate.setText(today.toString());
+        Text displayDateText = new Text();
+        displayDate = LocalDate.now();
+        displayDateText.setText(displayDate.toString());
 
-        //todo add list of the foods for the day 
-        DaySelectAndList.getChildren().addAll(goBackOneDay, displayDate, goForwardOneDay);
 
+        ArrayList<Food> ArrayListofFoodsOfDay = foodsMap.getAllDays().get(displayDate);
+
+        if (ArrayListofFoodsOfDay == null) {
+            ArrayListofFoodsOfDay = new ArrayList<>();
+        }
+
+
+        foodsOfDay.setPrefWidth(300);
+        foodsOfDay.setPrefHeight(450);
+        ObservableList<Food> test = FXCollections.observableArrayList(ArrayListofFoodsOfDay);
+        foodsOfDay.setItems(test);
+        DaySelectAndList.getChildren().addAll(goBackOneDay, displayDateText, goForwardOneDay, foodsOfDay);
+
+        /*
+            Set the total layout and then display everything
+         */
         majorLayout.getChildren().addAll(topInputs, DaySelectAndList);
         Scene scene = new Scene(majorLayout, 1920, 1080);
         s.setScene(scene);
-
-
-
         s.show();
+
+        //todo- add the functionality for 'add' (event handler) function and displaying the day with right foods - static var for it?
+
 
     }
 

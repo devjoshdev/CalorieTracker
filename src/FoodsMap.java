@@ -11,6 +11,10 @@ public class FoodsMap implements Serializable {
         allDays = new HashMap<>();
     }
 
+    public HashMap<LocalDate, ArrayList<Food>> getAllDays() {
+        return this.allDays;
+    }
+
     public int getTotalForDay(LocalDate date) throws InvalidDateException {
         if (allDays.containsKey(date)) {
             int total = 0;
