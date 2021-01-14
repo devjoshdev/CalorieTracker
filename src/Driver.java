@@ -12,17 +12,16 @@ import javafx.scene.Scene;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
+import java.io.*;
+
 import javafx.scene.text.Text;
 import javafx.collections.FXCollections;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.scene.control.Alert;
 
-public class Driver extends Application {
+public class Driver extends Application implements Serializable {
     private static FoodsMap foodsMap = new FoodsMap(); // holds a hashmap of days and their corresponding foods
     private static ListView<Food> foodsOfDay = new ListView<>(); // will store and display the foods for the day
     private static LocalDate displayDate;       // will be the day in question
@@ -176,6 +175,8 @@ public class Driver extends Application {
             }
         };
 
+
+
         addFoodButton.setOnAction(addHandler);
         goForwardOneDay.setOnAction(rightArrowHandler);
         goBackOneDay.setOnAction(leftArrowHandler);
@@ -183,6 +184,29 @@ public class Driver extends Application {
 
 
 
+
+    }
+
+    public void stop() {
+        try {
+            FileOutputStream file = new FileOutputStream("FoodsMap.obj");
+            ObjectOutputStream outputStream = new ObjectOutputStream(file);
+            outputStream.writeObject(foodsMap);
+
+        }
+
+        catch (FileNotFoundException fnfe) {
+            System.out.println("File Not Found");
+        }
+
+        catch (IOException ioe) {
+            System.out.println("IO Exception");
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Program is closing");
 
     }
 
